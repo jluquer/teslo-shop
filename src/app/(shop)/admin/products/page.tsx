@@ -74,7 +74,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                 className='border-b bg-white transition duration-300 ease-in-out hover:bg-gray-100'
               >
                 <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900'>
-                  <Link href={`/products/${product.slug}`}>
+                  <Link href={`/product/${product.slug}`}>
                     <Image
                       src={`/products/${product.ProductImage[0].url}`}
                       width={80}
@@ -86,7 +86,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                 </td>
                 <td className='whitespace-nowrap px-6 py-4 text-sm font-light text-gray-900'>
                   <Link
-                    href={`/admin/product/${product.slug}`}
+                    href={`/product/${product.slug}`}
                     className='hover:underline'
                   >
                     {product.title}
