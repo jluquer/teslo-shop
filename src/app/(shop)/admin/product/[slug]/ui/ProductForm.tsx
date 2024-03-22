@@ -1,11 +1,12 @@
 'use client';
 
 import { Product } from '@/interfaces';
-import { Category } from '@prisma/client';
+import { Category, ProductImage } from '@prisma/client';
 import { useForm } from 'react-hook-form';
+import Image from 'next/image';
 
 interface Props {
-  product: Product;
+  product: Product & { ProductImage?: ProductImage[] };
   categories: Category[];
 }
 
@@ -37,7 +38,7 @@ export const ProductForm = ({ product, categories }: Props) => {
   });
 
   const onSubmit = async (data: FormInputs) => {
-    console.log({ data });
+    console.log({ data, isValid });
   };
 
   return (
@@ -152,6 +153,26 @@ export const ProductForm = ({ product, categories }: Props) => {
               className='rounded-md border bg-gray-200 p-2'
               accept='image/png, image/jpeg'
             />
+          </div>
+          <div className='grid grid-cols-1 gap-3 lg:grid-cols-3'>
+            {product.ProductImage?.map((image) => (
+              <div key={image.id}>
+                <Image
+                  alt={product.title ?? ''}
+                  src={`/products/${image.url}`}
+                  width={300}
+                  height={300}
+                  className='rounded-t shadow-md'
+                />
+                <button
+                  type='button'
+                  className='btn-danger lg:w-300 w-full rounded-b'
+                  onClick={() => console.log(image.id, image.url)}
+                >
+                  Eliminar
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       </div>
