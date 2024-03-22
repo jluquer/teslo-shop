@@ -1,5 +1,6 @@
 'use client';
 
+import { changeUserRole } from '@/actions';
 import { User } from '@/interfaces';
 
 interface Props {
@@ -44,7 +45,11 @@ export const UsersTable = ({ users }: Props) => {
               {user.name}
             </td>
             <td className='flex items-center text-sm  text-gray-900 font-light px-6 py-4 whitespace-nowrap'>
-              <select className='text-sm text-gray-900' value={user.role}>
+              <select
+                className='text-sm text-gray-900'
+                value={user.role}
+                onChange={(e) => changeUserRole(user.id, e.target.value)}
+              >
                 <option value='admin'>Admin</option>
                 <option value='user'>User</option>
               </select>
