@@ -4,6 +4,7 @@ import { Product } from '@/interfaces';
 import { Category, ProductImage } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
+import clsx from 'clsx';
 
 interface Props {
   product: Product & { ProductImage?: ProductImage[] };
@@ -29,6 +30,9 @@ export const ProductForm = ({ product, categories }: Props) => {
     handleSubmit,
     register,
     formState: { isValid },
+    getValues,
+    setValue,
+    watch
   } = useForm<FormInputs>({
     defaultValues: {
       ...product,
@@ -39,6 +43,16 @@ export const ProductForm = ({ product, categories }: Props) => {
 
   const onSubmit = async (data: FormInputs) => {
     console.log({ data, isValid });
+  };
+
+  watch('sizes')
+
+  const onSizeChanged = async (size: string) => {
+    const sizes = new Set(getValues('sizes'));
+    sizes.has(size)
+      ? sizes.delete(size)
+      : sizes.add(size)
+    setValue('sizes', Array.from(sizes));
   };
 
   return (
@@ -136,12 +150,19 @@ export const ProductForm = ({ product, categories }: Props) => {
           <div className='flex flex-wrap'>
             {sizes.map((size) => (
               // bg-blue-500 text-white <--- si está seleccionado
-              <div
+              <button
                 key={size}
-                className='mr-2  flex h-10 w-10 items-center justify-center rounded-md border'
+                type='button'
+                onClick={() => onSizeChanged(size)}
+                className={clsx(
+                  'mb-2 mr-2 w-14 cursor-pointer rounded-md border p-2 text-center transition-all',
+                  {
+                    'bg-blue-500 text-white': getValues('sizes').includes(size),
+                  },
+                )}
               >
                 <span>{size}</span>
-              </div>
+              </button>
             ))}
           </div>
 
