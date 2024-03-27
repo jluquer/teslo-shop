@@ -43,10 +43,11 @@ export const ProductForm = ({ product, categories }: Props) => {
   });
 
   const onSubmit = async (data: FormInputs) => {
-    console.log(data);
     const formData = new FormData();
     const { ...productToSave } = data;
-    formData.append('id', product.id ?? '');
+
+    if (product.id) formData.append('id', product.id);
+
     formData.append('title', productToSave.title ?? '');
     formData.append('slug', productToSave.slug ?? '');
     formData.append('description', productToSave.description ?? '');
@@ -56,8 +57,6 @@ export const ProductForm = ({ product, categories }: Props) => {
     formData.append('tags', productToSave.tags ?? '');
     formData.append('categoryId', productToSave.categoryId ?? '');
     formData.append('gender', productToSave.gender ?? '');
-
-    console.log(formData);
 
     const { ok } = await createUpdateProduct(formData);
     console.log(ok, formData);

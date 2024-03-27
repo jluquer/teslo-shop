@@ -6,7 +6,7 @@ import { Gender } from '@prisma/client';
 import { z } from 'zod';
 
 const productSchema = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().uuid().optional().nullable(),
   title: z.string().min(3).max(255),
   slug: z.string().min(3).max(255),
   description: z.string(),
@@ -17,7 +17,7 @@ const productSchema = z.object({
   inStock: z.coerce
     .number()
     .min(0)
-    .transform((val) => Number(val)),
+    .transform((val) => Number(val.toFixed(0))),
   categoryId: z.string().uuid(),
   sizes: z.coerce.string().transform((val) => val.split(',')),
   tags: z.string(),
@@ -38,13 +38,13 @@ export async function createUpdateProduct(formData: FormData) {
 
   const { id, ...rest } = productData;
 
-  const prismaTx = await prisma.$transaction(async (tx) => {
+  const prismaTx = await prisma.$transaction(async () => {
     let product: Product;
     const tagsArray = rest.tags
       .split(',')
       .map((tag) => tag.trim().toLowerCase());
 
-    if (productData.id) {
+    if (id) {
       product = await prisma.product.update({
         where: { id },
         data: {
