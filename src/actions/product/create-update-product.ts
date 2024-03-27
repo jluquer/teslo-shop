@@ -73,12 +73,16 @@ export async function createUpdateProduct(formData: FormData) {
         });
       }
 
-      revalidatePath('/admin/products');
-      revalidatePath(`/admin/product/${product.slug}`);
-      revalidatePath(`/product/${product.slug}`);
+      if (formData.getAll('images')) {
+        console.log(formData.getAll('images'));
+      }
 
       return { product: txProduct };
     });
+
+    revalidatePath('/admin/products');
+    revalidatePath(`/admin/product/${product.slug}`);
+    revalidatePath(`/product/${product.slug}`);
 
     return { ok: true, product: prismaTx.product };
   } catch (error) {
