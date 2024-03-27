@@ -5,7 +5,8 @@ import { Category, ProductImage } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import clsx from 'clsx';
-import { createUpdateProduct } from '@/actions/product/create-update-product';
+import { createUpdateProduct } from '@/actions';
+import { useRouter } from 'next/navigation';
 
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
@@ -27,20 +28,15 @@ interface Props {
 }
 
 export const ProductForm = ({ product, categories }: Props) => {
-  const {
-    handleSubmit,
-    register,
-    formState: { isValid },
-    getValues,
-    setValue,
-    watch,
-  } = useForm<FormInputs>({
-    defaultValues: {
-      ...product,
-      tags: product.tags?.join(', '),
-      sizes: product.sizes ?? [],
-    },
-  });
+  const router = useRouter();
+  const { handleSubmit, register, getValues, setValue, watch } =
+    useForm<FormInputs>({
+      defaultValues: {
+        ...product,
+        tags: product.tags?.join(', '),
+        sizes: product.sizes ?? [],
+      },
+    });
 
   const onSubmit = async (data: FormInputs) => {
     const formData = new FormData();
@@ -58,8 +54,12 @@ export const ProductForm = ({ product, categories }: Props) => {
     formData.append('categoryId', productToSave.categoryId ?? '');
     formData.append('gender', productToSave.gender ?? '');
 
-    const { ok } = await createUpdateProduct(formData);
-    console.log(ok, formData);
+    const { ok, product: newProduct } = await createUpdateProduct(formData);
+    if (!ok) {
+      alert('El producto no se pudo actualizar');
+      return;
+    }
+    router.replace(`/admin/product/${newProduct?.slug}`);
   };
 
   watch('sizes');
