@@ -23,7 +23,12 @@ export default async function AdminProductsPage({ searchParams }: Props) {
     <>
       <Title title='Gestión de productos' />
       <div className='mb-5 flex justify-end'>
-        <Link href={'/admin/product/new'}>Nuevo producto</Link>
+        <Link
+          href={'/admin/product/new'}
+          className='btn-primary'
+        >
+          Nuevo producto
+        </Link>
       </div>
       <div className='mb-10'>
         <table className='min-w-full'>

@@ -5,11 +5,7 @@ import { Category, ProductImage } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import clsx from 'clsx';
-
-interface Props {
-  product: Product & { ProductImage?: ProductImage[] };
-  categories: Category[];
-}
+import { createUpdateProduct } from '@/actions/product/create-update-product';
 
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
@@ -25,6 +21,11 @@ interface FormInputs {
   gender: 'men' | 'women' | 'kid' | 'unisex';
 }
 
+interface Props {
+  product: Partial<Product> & { ProductImage?: ProductImage[] };
+  categories: Category[];
+}
+
 export const ProductForm = ({ product, categories }: Props) => {
   const {
     handleSubmit,
@@ -32,26 +33,41 @@ export const ProductForm = ({ product, categories }: Props) => {
     formState: { isValid },
     getValues,
     setValue,
-    watch
+    watch,
   } = useForm<FormInputs>({
     defaultValues: {
       ...product,
-      tags: product.tags.join(', '),
+      tags: product.tags?.join(', '),
       sizes: product.sizes ?? [],
     },
   });
 
   const onSubmit = async (data: FormInputs) => {
-    console.log({ data, isValid });
+    console.log(data);
+    const formData = new FormData();
+    const { ...productToSave } = data;
+    formData.append('id', product.id ?? '');
+    formData.append('title', productToSave.title ?? '');
+    formData.append('slug', productToSave.slug ?? '');
+    formData.append('description', productToSave.description ?? '');
+    formData.append('price', productToSave.price.toString() ?? '');
+    formData.append('inStock', productToSave.inStock?.toString() ?? '');
+    formData.append('sizes', productToSave.sizes.toString() ?? '');
+    formData.append('tags', productToSave.tags ?? '');
+    formData.append('categoryId', productToSave.categoryId ?? '');
+    formData.append('gender', productToSave.gender ?? '');
+
+    console.log(formData);
+
+    const { ok } = await createUpdateProduct(formData);
+    console.log(ok, formData);
   };
 
-  watch('sizes')
+  watch('sizes');
 
   const onSizeChanged = async (size: string) => {
     const sizes = new Set(getValues('sizes'));
-    sizes.has(size)
-      ? sizes.delete(size)
-      : sizes.add(size)
+    sizes.has(size) ? sizes.delete(size) : sizes.add(size);
     setValue('sizes', Array.from(sizes));
   };
 
@@ -144,7 +160,15 @@ export const ProductForm = ({ product, categories }: Props) => {
 
       {/* Selector de tallas y fotos */}
       <div className='w-full'>
-        {/* As checkboxes */}
+        <div className='mb-2 flex flex-col'>
+          <span>Inventario</span>
+          <input
+            type='number'
+            className='rounded-md border bg-gray-200 p-2'
+            {...register('inStock', { required: true, min: 0 })}
+          />
+        </div>
+
         <div className='flex flex-col'>
           <span>Tallas</span>
           <div className='flex flex-wrap'>
