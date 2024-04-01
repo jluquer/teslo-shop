@@ -4,7 +4,7 @@ import { Product } from '@/interfaces';
 import { Category, ProductImage as ProductImageType } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 import clsx from 'clsx';
-import { createUpdateProduct } from '@/actions';
+import { createUpdateProduct, deleteProductImage } from '@/actions';
 import { useRouter } from 'next/navigation';
 import { ProductImage } from '@/components';
 
@@ -222,7 +222,7 @@ export const ProductForm = ({ product, categories }: Props) => {
                 <button
                   type='button'
                   className='btn-danger lg:w-300 w-full rounded-b'
-                  onClick={() => console.log(image.id, image.url)}
+                  onClick={() => deleteProductImage(image.id, image.url)}
                 >
                   Eliminar
                 </button>
