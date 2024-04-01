@@ -1,12 +1,12 @@
 'use client';
 
 import { Product } from '@/interfaces';
-import { Category, ProductImage } from '@prisma/client';
+import { Category, ProductImage as ProductImageType } from '@prisma/client';
 import { useForm } from 'react-hook-form';
-import Image from 'next/image';
 import clsx from 'clsx';
 import { createUpdateProduct } from '@/actions';
 import { useRouter } from 'next/navigation';
+import { ProductImage } from '@/components';
 
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
@@ -24,7 +24,7 @@ interface FormInputs {
 }
 
 interface Props {
-  product: Partial<Product> & { ProductImage?: ProductImage[] };
+  product: Partial<Product> & { ProductImage?: ProductImageType[] };
   categories: Category[];
 }
 
@@ -212,9 +212,9 @@ export const ProductForm = ({ product, categories }: Props) => {
           <div className='grid grid-cols-1 gap-3 lg:grid-cols-3'>
             {product.ProductImage?.map((image) => (
               <div key={image.id}>
-                <Image
+                <ProductImage
                   alt={product.title ?? ''}
-                  src={`/products/${image.url}`}
+                  src={image.url}
                   width={300}
                   height={300}
                   className='rounded-t shadow-md'
