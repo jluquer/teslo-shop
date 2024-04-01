@@ -109,7 +109,9 @@ async function uploadImages(imagesToUpload: File[]) {
       const buffer = await img.arrayBuffer();
       const base64Img = Buffer.from(buffer).toString('base64');
       return cloudinary.uploader
-        .upload(`data:image/png;base64,${base64Img}`)
+        .upload(`data:image/png;base64,${base64Img}`, {
+          folder: 'product-images',
+        })
         .then((res) => res.secure_url);
     });
     return await Promise.all(uploadImgPromises);
