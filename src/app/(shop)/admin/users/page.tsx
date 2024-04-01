@@ -19,7 +19,7 @@ export default async function AdminUsersPage() {
       <Title title='Gestión de usuarios' />
 
       <div className='mb-10'>
-        <UsersTable users={users} />
+        <UsersTable users={users ?? []} />
       </div>
     </>
   );

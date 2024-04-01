@@ -17,6 +17,6 @@ export const getPaginatedUsers = async () => {
 
   return {
     ok: true,
-    users: users ?? [],
+    users: users,
   };
 };

@@ -1,8 +1,8 @@
 'use server';
 
-import { Product, Size } from '@/interfaces';
+import { Size } from '@/interfaces';
 import prisma from '@/lib/prisma';
-import { Gender } from '@prisma/client';
+import { Gender, Product } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { v2 as cloudinary } from 'cloudinary';
